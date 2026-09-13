@@ -1,0 +1,203 @@
+/* ============================================================================
+   QODE SOLUTIONS — дизайн-токены
+   Единственный источник правды по цвету, типографике, сетке и движению.
+   Всё остальное в проекте обращается только к этим переменным.
+
+   Палитра снята с логотипа: ведущий цвет — голубой, синий держит середину,
+   фиолетовый работает точечным акцентом на самом краю градиента.
+   ========================================================================= */
+
+@theme {
+  /* --- Палитра бренда (из логотипа) --------------------------------------- */
+  --color-cyan: #22d3ee; /* ведущий */
+  --color-cyan-2: #56e2f5; /* светлый голубой для бликов */
+  --color-blue: #2b8dff;
+  --color-violet: #7c3aed; /* только акцент, немного */
+
+  /* Затемнённые варианты для текста и заливок на светлом фоне.
+     Яркие cyan/blue не проходят AA как текст на белом. */
+  --color-cyan-ink: #0b7ea3;
+  --color-blue-ink: #1668e3;
+  --color-violet-ink: #6229d9;
+
+  /* --- Нейтрали ----------------------------------------------------------- */
+  /* Тёмный остался только для текста и редких глубоких поверхностей —
+     это уже не «ночной синий», а холодный графит с голубым подтоном. */
+  --color-ink: #10202e;
+  --color-ink-2: #17304a;
+  --color-ink-3: #244a6b;
+  --color-ink-4: #35618a;
+
+  --color-paper: #ffffff;
+  --color-paper-2: #f1f8fd; /* фон чередующихся секций — светло-голубой */
+  --color-paper-3: #dbeafa; /* границы на светлом */
+  --color-paper-4: #eaf5ff; /* мягкая голубая заливка карточек */
+
+  --color-muted: #9fb6cb; /* вторичный текст на тёмном */
+  --color-fg-soft: #55697e; /* вторичный текст на светлом */
+
+  /* --- Семантика (переопределяется в [data-surface], см. surfaces.css) ---- */
+  --color-bg: var(--color-paper);
+  --color-bg-alt: var(--color-paper-2);
+  --color-fg: var(--color-ink);
+  --color-fg-2: var(--color-fg-soft);
+  --color-line: var(--color-paper-3);
+  /* Границы интерактивных элементов (поля, чекбоксы): WCAG 1.4.11 требует 3:1. */
+  --color-line-strong: #8aa3b8;
+  --color-accent: var(--color-blue-ink);
+  /* Ошибки в формах: в палитре нет красного, violet-ink остаётся в рамках бренда. */
+  --color-danger: var(--color-violet-ink);
+
+  /* --- Градиенты ---------------------------------------------------------- */
+  /* Яркий — для знака, обводок, подчёркиваний и свечения.
+     Голубой занимает больше половины шкалы, фиолетовый — только хвост. */
+  --gradient-brand: linear-gradient(
+    135deg,
+    #56e2f5 0%,
+    #22d3ee 26%,
+    #2b8dff 66%,
+    #7c3aed 100%
+  );
+  /* Глубокий — только для заливок, на которых лежит белый текст. */
+  --gradient-brand-deep: linear-gradient(
+    135deg,
+    #0b7ea3 0%,
+    #1668e3 58%,
+    #6229d9 100%
+  );
+  /* Короткий голубой — заливка с тёмным текстом. */
+  --gradient-brand-bright: linear-gradient(
+    135deg,
+    #56e2f5 0%,
+    #22d3ee 45%,
+    #2b8dff 100%
+  );
+  /* Очень светлый — фоновые полосы и мягкие карточки на светлых секциях. */
+  --gradient-sky: linear-gradient(
+    150deg,
+    #ffffff 0%,
+    #eaf7ff 38%,
+    #ddeeff 72%,
+    #ece7ff 100%
+  );
+
+  /* --- Типографика -------------------------------------------------------- */
+  /* Латиница — Space Grotesk, кириллица — Manrope (см. app/fonts.ts). */
+  --font-display:
+    var(--font-display-latin), var(--font-display-cyrillic),
+    var(--font-display-cyrillic-ext), "Segoe UI", system-ui, sans-serif;
+  --font-text:
+    var(--font-text-latin), var(--font-text-cyrillic),
+    var(--font-text-cyrillic-ext), "Segoe UI", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", monospace;
+
+  /* Дисплейные размеры — текучие, без медиазапросов и без скачков layout. */
+  --text-display-1: clamp(2.75rem, 1.2rem + 6.4vw, 6rem); /* 44 → 96 */
+  --text-display-1--line-height: 0.94;
+  --text-display-1--letter-spacing: -0.042em;
+  --text-display-1--font-weight: 700;
+
+  --text-display-2: clamp(2.25rem, 1.15rem + 4.6vw, 4.5rem); /* 36 → 72 */
+  --text-display-2--line-height: 0.98;
+  --text-display-2--letter-spacing: -0.035em;
+  --text-display-2--font-weight: 700;
+
+  --text-display-3: clamp(1.875rem, 1.1rem + 3.2vw, 3.25rem); /* 30 → 52 */
+  --text-display-3--line-height: 1.04;
+  --text-display-3--letter-spacing: -0.03em;
+  --text-display-3--font-weight: 600;
+
+  --text-title: clamp(1.375rem, 1rem + 1.2vw, 1.75rem); /* 22 → 28 */
+  --text-title--line-height: 1.22;
+  --text-title--letter-spacing: -0.02em;
+  --text-title--font-weight: 600;
+
+  --text-lead: clamp(1.0625rem, 0.95rem + 0.7vw, 1.375rem); /* 17 → 22 */
+  --text-lead--line-height: 1.5;
+  --text-lead--letter-spacing: -0.011em;
+
+  --text-body: 1.0625rem; /* 17 */
+  --text-body--line-height: 1.65;
+  --text-body--letter-spacing: -0.006em;
+
+  --text-small: 0.9375rem; /* 15 */
+  --text-small--line-height: 1.55;
+
+  --text-caption: 0.8125rem; /* 13 */
+  --text-caption--line-height: 1.45;
+
+  --text-label: 0.75rem; /* 12, капслок-надзаголовки */
+  --text-label--line-height: 1;
+  --text-label--letter-spacing: 0.14em;
+  --text-label--font-weight: 600;
+
+  /* --- Сетка и контейнеры ------------------------------------------------- */
+  --container-content: 80rem; /* 1280 — основная колонка контента */
+  --container-wide: 90rem; /* 1440 — широкие сцены */
+  --container-text: 46rem; /* 736 — комфортная мера для абзацев */
+
+  /* --- Радиусы ------------------------------------------------------------ */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.75rem;
+  --radius-2xl: 2.25rem;
+
+  /* --- Тени: мягкие голубоватые подложки и свечение бренда ---------------- */
+  --shadow-card:
+    0 1px 2px -1px rgb(16 32 46 / 0.05), 0 10px 28px -14px rgb(24 90 150 / 0.18);
+  --shadow-lift:
+    0 2px 6px -3px rgb(16 32 46 / 0.08), 0 26px 52px -22px rgb(24 90 150 / 0.3);
+  --shadow-glow:
+    0 0 0 1px rgb(34 211 238 / 0.2), 0 18px 52px -18px rgb(43 141 255 / 0.45);
+  --shadow-header:
+    0 1px 2px -1px rgb(16 32 46 / 0.06), 0 16px 40px -24px rgb(24 90 150 / 0.35);
+
+  /* --- Движение ----------------------------------------------------------- */
+  --ease-brand: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 420ms;
+  --duration-scene: 720ms;
+
+  --animate-gradient-drift: gradient-drift 14s var(--ease-in-out-quart) infinite;
+  --animate-blob-float: blob-float 22s ease-in-out infinite;
+
+  /* --- Брейкпоинты: 360 / 768 / 1280 / 1920 ------------------------------ */
+  --breakpoint-xs: 26.25rem; /* 420 */
+  --breakpoint-3xl: 120rem; /* 1920 */
+}
+
+/* Токены вне @theme: не нужны как Tailwind-утилиты, только как переменные. */
+:root {
+  /* Боковые отступы — один источник для контейнера, sticky-навигации и hero. */
+  --gutter: 1.25rem; /* 20 @ 360 */
+  --header-h: 4rem;
+  /* Шапка — плавающая капсула: её высота и зазор до края считаются отдельно,
+     чтобы контент под ней не подлезал и якоря доезжали ровно. */
+  --header-gap: 0.75rem;
+  --header-total: calc(var(--header-h) + var(--header-gap) * 2);
+  /* Вертикальный ритм секций: плотность намеренно разная. */
+  --section-sm: clamp(3rem, 2rem + 4vw, 5rem);
+  --section-md: clamp(4.5rem, 3rem + 6vw, 8rem);
+  --section-lg: clamp(6rem, 3.5rem + 9vw, 11rem);
+}
+
+@media (width >= 48rem) {
+  :root {
+    --gutter: 2rem; /* 32 @ 768 */
+    --header-h: 4.25rem;
+    --header-gap: 1rem;
+  }
+}
+
+@media (width >= 80rem) {
+  :root {
+    --gutter: 3rem; /* 48 @ 1280+ */
+    --header-h: 4.5rem;
+    --header-gap: 1.125rem;
+  }
+}

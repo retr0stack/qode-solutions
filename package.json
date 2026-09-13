@@ -1,0 +1,43 @@
+{
+  "name": "qode-solutions-kz",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "fonts:sync": "node scripts/sync-fonts.mjs"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.1",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.23.12",
+    "gsap": "^3.13.0",
+    "lenis": "^1.3.11",
+    "next": "^15.5.4",
+    "ogl": "^1.0.11",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-hook-form": "^7.63.0",
+    "tailwind-merge": "^3.3.1",
+    "zod": "^4.1.5"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.7",
+    "@fontsource-variable/inter": "^5.2.6",
+    "@fontsource-variable/manrope": "^5.2.6",
+    "@fontsource-variable/space-grotesk": "^5.2.6",
+    "@fontsource/manrope": "^5.3.0",
+    "@fontsource/space-grotesk": "^5.3.0",
+    "@tailwindcss/postcss": "^4.1.13",
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "eslint": "^9.34.0",
+    "eslint-config-next": "^15.5.4",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5.9.2"
+  }
+}

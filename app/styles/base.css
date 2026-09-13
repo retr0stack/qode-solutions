@@ -1,0 +1,114 @@
+/* ============================================================================
+   Базовый слой: сброс, базовая типографика, фокус.
+   Тёмная зона и токены компонентов — в surfaces.css,
+   keyframes и prefers-reduced-motion — в motion.css.
+   ========================================================================= */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    min-width: 0;
+  }
+
+  html {
+    /* Инерционный скролл делает Lenis; нативный smooth его ломает. */
+    scroll-behavior: auto;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: calc(var(--header-total) + 1rem);
+    /*
+     * overflow-x на корне здесь намеренно НЕ ставится.
+     * hidden сделал бы корень скролл-контейнером и ломает position: sticky
+     * в Safari, а clip к вьюпорту вообще не пробрасывается — страница
+     * продолжает прокручиваться. Вместо страховки просто ничего не выходит
+     * за правый край: проверено замерами на 360 / 768 / 1280 / 1920.
+     */
+  }
+
+  body {
+    /* Светлый фон по умолчанию: белый с едва заметным голубым подтоном
+       у верхней кромки. Ни одной тёмной плашки на уровне страницы. */
+    background-color: var(--color-bg);
+    background-image: radial-gradient(
+      120% 60% at 50% -10%,
+      rgb(34 211 238 / 0.1) 0%,
+      rgb(43 141 255 / 0.05) 38%,
+      transparent 72%
+    );
+    background-attachment: fixed;
+    color: var(--color-fg);
+    font-family: var(--font-text);
+    font-size: var(--text-body);
+    line-height: 1.65;
+    letter-spacing: -0.006em;
+    font-feature-settings: "cv11" 1, "ss01" 1;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* Длинное слово или URL не должны растягивать страницу. */
+    overflow-wrap: break-word;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Видимый фокус — обязателен, но только для клавиатуры. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-blue) 22%, transparent);
+    color: inherit;
+  }
+
+  svg {
+    display: block;
+  }
+
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Кириллица в Manrope чуть шире Space Grotesk — компенсируем трекинг,
+     чтобы русские заголовки держали ту же плотность, что латинские. */
+  :lang(ru) h1,
+  :lang(ru) h2,
+  :lang(ru) h3,
+  :lang(kk) h1,
+  :lang(kk) h2,
+  :lang(kk) h3 {
+    letter-spacing: -0.03em;
+  }
+}
+
+
+/*
+ * Ничто не должно расширять документ по горизонтали.
+ *
+ * Плавающая шапка и кнопка WhatsApp позиционированы от вьюпорта: стоит
+ * любому блоку вылезти вправо, как появляется горизонтальная прокрутка и
+ * оба элемента визуально смещаются. clip, а не hidden — hidden на html
+ * ломает position: sticky внутри страницы.
+ */
+html {
+  overflow-x: clip;
+}
+
+body {
+  overflow-x: clip;
+}

@@ -1,0 +1,280 @@
+/* ---------------------------------------------------------------------------
+   Стили компонентов, портированных с React Bits.
+
+   Логика анимаций взята из оригиналов, оформление переведено на токены
+   бренда: вместо чёрного #060010 — --color-ink, вместо белого акцента —
+   фирменный градиент. Цвета нигде не захардкожены, поэтому тёмная и
+   светлая зоны сайта подхватывают их сами.
+   ------------------------------------------------------------------------- */
+
+/* ---------- Аккордеон-галерея (accordion-gallery) ---------- */
+.ag-root {
+  --ag-gap: 10px;
+  --ag-radius: var(--radius-lg);
+  --ag-media-size: 320px;
+
+  display: flex;
+  flex-direction: row;
+  gap: var(--ag-gap);
+  width: 100%;
+  max-width: 100%;
+  perspective: 1400px;
+  perspective-origin: 50% 50%;
+}
+
+.ag-panel {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: var(--ag-radius);
+  cursor: pointer;
+  display: block;
+  text-decoration: none;
+  outline: none;
+  transform-style: preserve-3d;
+  transform-origin: center center;
+  background: var(--color-ink);
+  box-shadow: 0 10px 30px -18px rgb(16 32 46 / 0.6);
+  will-change: flex-grow, transform;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ag-panel:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--color-accent),
+    0 10px 30px -18px rgb(16 32 46 / 0.6);
+}
+
+.ag-frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.ag-media {
+  --ag-gray: 1;
+  --ag-dim: 0.35;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--ag-media-size);
+  height: 100%;
+  filter: grayscale(var(--ag-gray));
+  will-change: transform, filter;
+}
+
+.ag-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Затемнение снизу — под подпись. Тон берётся из --color-ink. */
+.ag-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, transparent 42%, rgb(16 32 46 / 0.86) 100%),
+    rgb(16 32 46 / calc(var(--ag-dim, 0.35)));
+}
+
+.ag-label {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Полоска-акцент: фирменный градиент вместо белого. */
+.ag-bar {
+  flex: 0 0 auto;
+  width: 3px;
+  height: 34px;
+  border-radius: 3px;
+  background: var(--gradient-brand);
+  opacity: 0;
+}
+
+.ag-text {
+  min-width: 0;
+  color: var(--color-paper);
+  opacity: 0;
+  text-shadow: 0 2px 14px rgb(16 32 46 / 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ag-panel,
+  .ag-media {
+    will-change: auto;
+  }
+}
+
+/* ---------- Стена проектов (drift-wall) ---------- */
+.dw-root {
+  --dw-tile-w: 200px;
+  --dw-tile-h: 132px;
+  --dw-gap: 18px;
+  --dw-radius: var(--radius-lg);
+  --dw-lift: 64px;
+  --dw-dim: 0.55;
+  --dw-edge: 40%;
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  perspective: var(--dw-perspective, 1200px);
+  perspective-origin: 50% 50%;
+  -webkit-mask-image:
+    radial-gradient(ellipse 78% 82% at 50% 46%, #000 var(--dw-edge), transparent 100%),
+    linear-gradient(to top, #000 var(--dw-edge), transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    radial-gradient(ellipse 78% 82% at 50% 46%, #000 var(--dw-edge), transparent 100%),
+    linear-gradient(to top, #000 var(--dw-edge), transparent 100%);
+  mask-composite: intersect;
+}
+
+.dw-plane {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: row;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.dw-col {
+  position: relative;
+  width: calc(var(--dw-tile-w) + var(--dw-gap));
+  transform-style: preserve-3d;
+}
+
+.dw-track {
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+  transform-style: preserve-3d;
+}
+
+.dw-tile {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: calc(var(--dw-tile-h) + var(--dw-gap));
+  flex: 0 0 auto;
+  outline: none;
+  transform-style: preserve-3d;
+  border: 0;
+  padding: 0;
+  background: none;
+}
+
+.dw-inner {
+  position: absolute;
+  inset: calc(var(--dw-gap) / 2);
+  display: block;
+  border-radius: var(--dw-radius);
+  overflow: hidden;
+  background: var(--color-ink-2);
+  opacity: var(--dw-dim);
+  transform: translateZ(0);
+  pointer-events: none;
+  transition:
+    transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dw-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(1) saturate(0.92);
+  transition: filter 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.dw-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--color-ink);
+  opacity: 0.42;
+  pointer-events: none;
+  transition: opacity 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dw-tile.is-active .dw-inner,
+.dw-tile:focus-visible .dw-inner {
+  opacity: 1;
+  transform: translateZ(var(--dw-lift));
+  box-shadow: 0 24px 60px -18px rgb(16 32 46 / 0.7);
+}
+
+.dw-tile.is-active img,
+.dw-tile:focus-visible img {
+  filter: grayscale(0) saturate(1.05);
+}
+
+.dw-tile.is-active .dw-overlay,
+.dw-tile:focus-visible .dw-overlay {
+  opacity: 0;
+}
+
+.dw-tile:focus-visible .dw-inner {
+  box-shadow:
+    0 24px 60px -18px rgb(16 32 46 / 0.7),
+    0 0 0 2px var(--color-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dw-plane,
+  .dw-track {
+    will-change: auto;
+  }
+}
+
+/* ---------- Морф-слайдер (morph-slider) ---------- */
+.ms-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--color-ink);
+  user-select: none;
+  touch-action: pan-y;
+}
+
+.ms-stage {
+  position: absolute;
+  inset: 0;
+  cursor: grab;
+  outline: none;
+}
+
+.ms-stage:active {
+  cursor: grabbing;
+}
+
+.ms-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}

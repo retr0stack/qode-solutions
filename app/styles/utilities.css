@@ -1,0 +1,191 @@
+/* ============================================================================
+   Утилиты. Всё, что переиспользуется в разметке чаще двух раз, живёт здесь,
+   а не копипастится длинными цепочками классов.
+
+   Внимание: утилиты `tech-grid` больше нет. Сеточные фоны убраны со всего
+   сайта — если понадобится фактура, используйте мягкие градиентные пятна
+   (components/motion/GradientBlobs.tsx).
+   ========================================================================= */
+
+/* --- Сетка ---------------------------------------------------------------- */
+
+/** Боковые отступы страницы. Один источник для всех контейнеров. */
+@utility gutter-x {
+  padding-inline: var(--gutter);
+}
+
+/** 12 колонок. На мобильном схлопывается в 4 — мобильная сетка своя. */
+@utility grid-12 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--gutter);
+
+  @media (width >= 48rem) {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+  @media (width >= 64rem) {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+
+/* --- Градиент ------------------------------------------------------------- */
+
+/** Текст, залитый градиентом бренда. С фолбэком на сплошной цвет. */
+@utility text-gradient {
+  color: var(--color-blue-ink);
+
+  @supports (background-clip: text) {
+    background-image: var(--gradient-brand-deep);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+}
+
+/** То же, но яркий вариант — только на глубоком фоне. */
+@utility text-gradient-bright {
+  color: var(--color-cyan);
+
+  @supports (background-clip: text) {
+    background-image: var(--gradient-brand);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+}
+
+/** Медленно едущий градиент. Анимируется background-position — без reflow. */
+@utility gradient-drift {
+  background-size: 220% 220%;
+  animation: var(--animate-gradient-drift);
+}
+
+/**
+ * Градиентная рамка в 1px без второго слоя разметки.
+ * Работает на любом фоне: заливка градиентом + маска по контуру.
+ */
+@utility border-gradient {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    /* -1px, а не 0: абсолютный ::after считается от padding-box, поэтому при
+       inset: 0 градиентный контур лёг бы внутрь существующей границы в 1px,
+       и было бы видно обе. С -1px он ложится ровно на неё. */
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: var(--gradient-brand);
+    /* Два слоя маски: вычитаем внутреннюю область — остаётся контур в 1px.
+       Longhand, а не шорткад mask: в шорткаде mask-composite ведёт себя
+       по-разному в Safari и Chromium. */
+    mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+    mask-clip: content-box, border-box;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity var(--duration-base) var(--ease-brand);
+    pointer-events: none;
+  }
+}
+
+/** Показать градиентную рамку: на hover карточки или на фокусе внутри. */
+@utility border-gradient-on {
+  &::after {
+    opacity: 1;
+  }
+}
+
+/* --- Поверхности ---------------------------------------------------------- */
+
+/** Базовая карточка: волосяная граница, без теней по умолчанию. */
+@utility surface {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+}
+
+/**
+ * Стеклянная карточка: полупрозрачный белый с размытием.
+ * Основная поверхность светлой темы — под ней видно градиентные пятна.
+ */
+@utility glass {
+  background-color: rgb(255 255 255 / 0.72);
+  border: 1px solid rgb(255 255 255 / 0.9);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-radius: var(--radius-lg);
+}
+
+/** Мягкая голубая плашка — вместо тёмных блоков в акцентных местах. */
+@utility sky-panel {
+  background-image: var(--gradient-sky);
+  border: 1px solid rgb(255 255 255 / 0.75);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+}
+
+/* --- Движение ------------------------------------------------------------- */
+
+/**
+ * Бегущая строка. Содержимое обязано быть продублировано дважды:
+ * сдвиг идёт ровно на 50%, поэтому стык не виден.
+ */
+@utility marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-x 38s linear infinite;
+}
+
+/** Пауза бегущей строки при наведении — читать проще. */
+@utility marquee-pausable {
+  &:hover .marquee-track,
+  &:focus-within .marquee-track {
+    animation-play-state: paused;
+  }
+}
+
+/* --- Прочее --------------------------------------------------------------- */
+
+/** Скрыть визуально, оставить для скринридера. */
+@utility sr-only-focusable {
+  &:not(:focus):not(:focus-within) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/** Обрезка строк по количеству. */
+@utility text-balance-tight {
+  text-wrap: balance;
+  max-width: 22ch;
+}
+
+/**
+ * Отступ до левого края колонки контента — совпадает с Container.
+ * Нужен горизонтальным трекам, которые выходят за контейнер вправо,
+ * но должны начинаться ровно по сетке.
+ */
+@utility gutter-lead {
+  padding-inline-start: max(
+    var(--gutter),
+    calc((100vw - var(--container-content)) / 2 + var(--gutter))
+  );
+}
+
+/** Скрыть системный скроллбар у горизонтальных треков. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
