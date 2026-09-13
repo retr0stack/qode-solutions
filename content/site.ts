@@ -4,11 +4,27 @@ import type { LinkItem, Locale } from "./types";
 export const defaultLocale: Locale = "ru";
 export const locales: readonly Locale[] = ["ru", "kk", "en"];
 
+/**
+ * Базовый адрес сайта.
+ *
+ * Берётся из окружения, но только если там непустая строка. Оператор ??
+ * подставляет запасное значение лишь для null и undefined, а хостинги
+ * часто передают объявленную, но незаполненную переменную как "" – такая
+ * строка проходила дальше и роняла сборку на new URL("") с ERR_INVALID_URL.
+ *
+ * Схема добавляется, если её забыли: "qode.kz" сам по себе тоже не URL.
+ */
+function resolveSiteUrl(): string {
+  const fromEnv = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (!fromEnv) return "https://qode.kz";
+  return /^https?:\/\//.test(fromEnv) ? fromEnv : `https://${fromEnv}`;
+}
+
 export const site = {
   name: "QODE SOLUTIONS",
   descriptor: "Агентство цифровых решений",
   /* TODO: подставить финальный домен и продублировать в .env (NEXT_PUBLIC_SITE_URL) */
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://qode.kz",
+  url: resolveSiteUrl(),
   locale: "ru_RU",
   foundingYear: 2024,
 } as const;
