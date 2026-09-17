@@ -1,16 +1,28 @@
+"use client";
+
 import { Container, Eyebrow, Heading, Text } from "@/components/primitives";
 import { FadeIn, InkBackdrop } from "@/components/motion";
-import type { DictIntro } from "@/content/i18n";
+import { useDict } from "@/components/i18n";
+import { cn } from "@/lib/cn";
+import type { Dict } from "@/content/i18n";
+
+/** Разделы, у которых есть собственная шапка страницы. */
+type IntroSection = "services" | "cases" | "partners" | "team" | "founders" | "contacts";
 
 interface PageIntroProps {
-  intro: DictIntro;
   /**
-   * Тёмная шапка вместо светлой. Раньше здесь стояла фотография, но
-   * читаемость заголовка зависела от яркости конкретного кадра, а сами
-   * снимки ничего не рассказывали о странице. Градиент решает ту же
-   * задачу — даёт странице характер — и не спорит с текстом.
+   * Ключ раздела, а не готовый объект.
+   *
+   * Раньше страницы передавали сюда ru.<раздел>.intro напрямую, и шапка
+   * оставалась русской при любом переключении языка – это и был баг с
+   * непереводимым тёмным блоком наверху. Теперь текст берётся из активного
+   * словаря, а страницы передают только имя раздела.
    */
+  section: IntroSection;
+  /** Тёмная шапка вместо светлой. */
   tone?: "sky" | "ink";
+  /** Заголовок в одну строку: для коротких формулировок вроде «5 – 25». */
+  titleNoWrap?: boolean;
   /** Дополнительный блок справа: контакты, счётчик, кнопка. */
   aside?: React.ReactNode;
 }
@@ -19,19 +31,20 @@ interface PageIntroProps {
  * Шапка внутренней страницы.
  *
  * Высота на мобильном ограничена 45svh: длинная шапка заставляла
- * прокручивать пол-экрана до первого содержательного блока. Край первого
- * блока должен быть виден сразу.
+ * прокручивать пол-экрана до первого содержательного блока.
  *
  * Верхний отступ считается от --header-total, потому что шапка сайта
  * плавающая и занимает высоту капсулы плюс зазоры.
  */
-export function PageIntro({ intro, tone = "ink", aside }: PageIntroProps) {
+export function PageIntro({ section, tone = "ink", titleNoWrap = false, aside }: PageIntroProps) {
+  const dict = useDict();
+  const intro = (dict[section] as { intro: Dict["cases"]["intro"] }).intro;
   const ink = tone === "ink";
 
   return (
     <section
       data-surface={ink ? "dark" : "sky"}
-      className="relative flex max-h-[45svh] min-h-[15rem] flex-col justify-end overflow-hidden pt-[calc(var(--header-total)+2rem)] pb-8 md:max-h-none md:min-h-[19rem] md:pb-12 lg:min-h-[21rem]"
+      className="relative flex max-h-[45svh] min-h-[15rem] flex-col justify-end overflow-hidden pt-[calc(var(--header-total)+2rem)] pb-8 md:max-h-none md:min-h-[17rem] md:pb-10 lg:min-h-[19rem]"
     >
       {ink ? <InkBackdrop /> : null}
 
@@ -42,7 +55,15 @@ export function PageIntro({ intro, tone = "ink", aside }: PageIntroProps) {
               <Eyebrow>{intro.eyebrow}</Eyebrow>
             </FadeIn>
             <FadeIn delay={0.08}>
-              <Heading level={1} size="display-2" className="max-w-[20ch]">
+              <Heading
+                level={1}
+                size="display-2"
+                className={cn(
+                  titleNoWrap
+                    ? "text-[clamp(1.75rem,3.6vw,3.25rem)] whitespace-nowrap"
+                    : "max-w-[20ch]",
+                )}
+              >
                 {intro.title}
               </Heading>
             </FadeIn>

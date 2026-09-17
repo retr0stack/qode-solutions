@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { budgetLabel, leadSchema } from "@/lib/lead-schema";
+import { leadSchema, serviceLabel } from "@/lib/lead-schema";
 
 /** Заявки не кэшируются и не пререндерятся. */
 export const dynamic = "force-dynamic";
@@ -10,7 +10,7 @@ interface LeadPayload {
   /* Короткая форма спрашивает только имя и контакт, поэтому оба поля
      необязательные — заявка без них полноценна, а не сломана. */
   task?: string;
-  budget?: string;
+  service?: string;
   receivedAt: string;
 }
 
@@ -41,7 +41,7 @@ async function deliverToTelegram(lead: LeadPayload): Promise<boolean> {
     "Новая заявка с сайта",
     `Имя: ${lead.name}`,
     `Контакт: ${lead.contact}`,
-    lead.budget ? `Бюджет: ${budgetLabel(lead.budget)}` : null,
+    lead.service ? `Направление: ${serviceLabel(lead.service)}` : null,
     lead.task ? `Задача: ${lead.task}` : null,
   ]
     .filter(Boolean)
@@ -92,7 +92,7 @@ export async function POST(request: Request) {
     name: parsed.data.name,
     contact: parsed.data.contact,
     task: parsed.data.task,
-    budget: parsed.data.budget,
+    service: parsed.data.service,
     receivedAt: new Date().toISOString(),
   };
 

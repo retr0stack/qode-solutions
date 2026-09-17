@@ -5,6 +5,7 @@ import {
   CtaSection,
   DirectionsSection,
   EuropeSection,
+  CasesPreview,
 } from "@/components/home";
 import { ProcessSection } from "@/components/process";
 import { FaqSection } from "@/components/faq";
@@ -29,6 +30,8 @@ export default function HomePage() {
       <Hero />
       <EuropeSection />
       <DirectionsSection />
+      <CasesPreview />
+
       <ProcessSection />
       <AdvantagesSection />
       <FaqSection />

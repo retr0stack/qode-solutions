@@ -5,7 +5,7 @@ import { Button, Disclosure } from "@/components/ui";
 import { InkBackdrop, Magnetic, Reveal } from "@/components/motion";
 import { LeadForm } from "@/components/forms";
 import { useDict } from "@/components/i18n";
-import { contacts, socials, whatsappHref, PHONE_ENABLED } from "@/content";
+import { contacts, phones, socials, whatsappHref, PHONE_ENABLED } from "@/content";
 import { track } from "@/lib/analytics";
 
 /**
@@ -105,15 +105,13 @@ function ContactExtras() {
         {PHONE_ENABLED ? (
           <div className="flex flex-col gap-1">
             <dt className="text-fg-2 text-caption">{dict.cta.phoneLabel}</dt>
-            <dd>
-              <a
-                href={contacts.phoneHref}
-                onClick={() => track("phone_click")}
-                className="text-small"
-              >
-                {contacts.phone}
-              </a>
-            </dd>
+            {phones.map((phone) => (
+              <dd key={phone.href}>
+                <a href={phone.href} onClick={() => track("phone_click")} className="text-small">
+                  {phone.label}
+                </a>
+              </dd>
+            ))}
           </div>
         ) : null}
 

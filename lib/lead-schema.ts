@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { budgetOptions } from "@/content";
+import { serviceOptions } from "@/content";
 import { ru } from "@/content/i18n";
 
-/** Значения селекта бюджета берутся из контента — один источник правды. */
-const budgetValues = budgetOptions.map((option) => option.value) as [
+/** Значения селекта направления берутся из контента – один источник правды. */
+const serviceValues = serviceOptions.map((option) => option.value) as [
   string,
   ...string[],
 ];
@@ -43,17 +43,18 @@ export function createLeadSchema(messages: LeadMessages, compact = false) {
         messages.contactInvalid,
       ),
     /*
-     * В короткой форме задача и бюджет не спрашиваются вовсе: каждое лишнее
-     * поле срезает заявки, а бюджет — самое пугающее из них. Серверная схема
-     * тоже собирается в режиме compact, иначе короткая заявка не прошла бы
-     * проверку на бэкенде.
+     * Описание задачи необязательно в обеих формах.
+     *
+     * Человек, который пришёл с вопросом «сколько это стоит», не готов
+     * писать техническое задание – и уходит, увидев большое обязательное
+     * поле. Имени и контакта достаточно, детали выясняются в переписке.
      */
-    task: compact
-      ? z.string().trim().max(2000).optional()
-      : z.string().trim().min(1, messages.taskRequired).min(10, messages.taskTooShort).max(2000),
-    budget: compact
-      ? z.enum(budgetValues).optional()
-      : z.enum(budgetValues, { message: messages.budgetRequired }),
+    task: z.string().trim().max(2000).optional(),
+    /* Направление – единственный вопрос по сути. В короткой форме его
+       тоже не спрашиваем: там важна только скорость. */
+    service: compact
+      ? z.enum(serviceValues).optional()
+      : z.enum(serviceValues, { message: messages.serviceRequired }),
     /**
      * Ловушка для ботов: настоящий человек это поле не видит и не заполнит.
      * Дешевле и незаметнее капчи.
@@ -70,7 +71,7 @@ export const leadSchema = createLeadSchema(ru.form.validation, true);
 
 export type LeadInput = z.infer<typeof leadSchema>;
 
-/** Подпись вилки бюджета по значению — для письма и лога. */
-export function budgetLabel(value: string): string {
-  return budgetOptions.find((option) => option.value === value)?.label ?? value;
+/** Подпись направления по значению – для письма и лога. */
+export function serviceLabel(value: string): string {
+  return serviceOptions.find((option) => option.value === value)?.label ?? value;
 }

@@ -1,4 +1,4 @@
-import { cities, contacts, site, socials } from "@/content";
+import { cities, contacts, phones, site, socials } from "@/content";
 import { ru } from "@/content/i18n";
 
 /*
@@ -20,7 +20,8 @@ export function organizationSchema() {
     url: site.url,
     logo: `${site.url}/icon.svg`,
     email: contacts.email,
-    telephone: contacts.phone,
+    /* E.164 без скобок: разметку читают машины, не люди. */
+    telephone: phones.map((phone) => phone.href.replace("tel:", "")),
     foundingDate: String(site.foundingYear),
     sameAs: socials.filter((s) => s.label !== "WhatsApp").map((s) => s.href),
     areaServed: { "@type": "Country", name: "Казахстан" },
@@ -40,7 +41,8 @@ export function localBusinessSchema() {
     description: site.descriptor,
     url: site.url,
     image: `${site.url}/icon.svg`,
-    telephone: contacts.phone,
+    /* E.164 без скобок: разметку читают машины, не люди. */
+    telephone: phones.map((phone) => phone.href.replace("tel:", "")),
     email: contacts.email,
     parentOrganization: { "@id": ORGANIZATION_ID },
     address: {

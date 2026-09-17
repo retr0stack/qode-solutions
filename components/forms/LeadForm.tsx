@@ -146,23 +146,23 @@ export function LeadForm({ variant = "compact", className }: LeadFormProps) {
       {compact ? null : (
         <>
       <Field
-        id="lead-budget"
-        label={dict.form.budgetLabel}
-        hint={dict.form.budgetHint}
-        error={errors.budget?.message}
+        id="lead-service"
+        label={dict.form.serviceLabel}
+        hint={dict.form.serviceHint}
+        error={errors.service?.message}
       >
         {(props) => (
           <SelectShell>
             <select
               {...props}
-              {...register("budget")}
+              {...register("service")}
               defaultValue=""
               className={cn(props.className, "appearance-none pr-11")}
             >
               <option value="" disabled>
-                {dict.form.budgetPlaceholder}
+                {dict.form.servicePlaceholder}
               </option>
-              {dict.form.budgetOptions.map((option) => (
+              {dict.form.serviceOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>

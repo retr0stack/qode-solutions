@@ -14,6 +14,8 @@ import { usePrefersReducedMotion } from "@/lib/hooks";
 export interface DriftItem {
   id: string;
   image: string;
+  /** Подложка на случай, если файла обложки ещё нет. */
+  fallback?: string;
   title: string;
 }
 
@@ -239,11 +241,31 @@ export function DriftWall({
       aria-label={item.title}
       className={cn("dw-tile", activeId === item.id && "is-active")}
     >
-      <span className="dw-inner">
+      <span
+        className="dw-inner"
+        /* Подложка под картинкой: если файла обложки ещё нет, плитка
+           остаётся фирменной заливкой, а не белым пятном. */
+        style={
+          item.fallback
+            ? { backgroundImage: `url("${item.fallback}")`, backgroundSize: "cover" }
+            : undefined
+        }
+      >
         {/* Обычный img: плиток на экране десятки, и next/image здесь дал бы
             десятки запросов к оптимизатору без выигрыша. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={item.image} alt="" loading="lazy" decoding="async" draggable={false} />
+        <img
+          src={item.image}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          draggable={false}
+          /* Файла может не быть – тогда прячем картинку и оставляем
+             подложку вместо иконки битого изображения. */
+          onError={(event) => {
+            event.currentTarget.style.display = "none";
+          }}
+        />
         <span className="dw-overlay" aria-hidden="true" />
       </span>
     </button>

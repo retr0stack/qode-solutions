@@ -1,12 +1,23 @@
 import type { FieldCopy, SelectOption } from "./types";
 
 /** Вилки бюджета в тенге. TODO: сверить с текущим прайсом. */
-export const budgetOptions: readonly SelectOption[] = [
-  { value: "under-500k", label: "до 500 000 ₸" },
-  { value: "500k-1500k", label: "500 000 – 1 500 000 ₸" },
-  { value: "1500k-4000k", label: "1 500 000 – 4 000 000 ₸" },
-  { value: "over-4000k", label: "более 4 000 000 ₸" },
-  { value: "unknown", label: "Пока не знаю" },
+/**
+ * Направления в форме заявки.
+ *
+ * Раньше здесь спрашивали вилку бюджета. Это худший вопрос в первом
+ * контакте: человек, который ещё не знает объёма работ, на нём просто
+ * закрывает форму. Направление он назвать может всегда, а нам этого
+ * достаточно, чтобы отдать заявку нужному инженеру.
+ *
+ * Значения совпадают со слагами направлений из словаря – один источник
+ * правды, и заявка на любом языке проходит серверную проверку.
+ */
+export const serviceOptions: readonly SelectOption[] = [
+  { value: "sites", label: "Сайты" },
+  { value: "software", label: "ПО под задачу" },
+  { value: "bots", label: "Боты" },
+  { value: "integrations", label: "Интеграции" },
+  { value: "security", label: "Безопасность" },
 ];
 
 export const leadForm = {
@@ -26,10 +37,10 @@ export const leadForm = {
       label: "Задача",
       placeholder: "Что нужно сделать и в какие сроки",
     },
-    budget: {
-      label: "Бюджет",
-      placeholder: "Выберите вилку",
-      hint: "Помогает сразу предложить реалистичное решение.",
+    service: {
+      label: "Тип услуги",
+      placeholder: "Выберите направление",
+      hint: "Отдадим заявку инженеру нужного направления.",
     },
   } satisfies Record<string, FieldCopy>,
   submit: "Отправить заявку",
@@ -54,5 +65,5 @@ export const validationMessages = {
   contactInvalid: "Похоже, в телефоне или почте опечатка",
   taskRequired: "Опишите задачу хотя бы в двух словах",
   taskTooShort: "Нужно чуть подробнее – минимум 10 символов",
-  budgetRequired: "Выберите вилку бюджета",
+  serviceRequired: "Выберите направление",
 } as const;

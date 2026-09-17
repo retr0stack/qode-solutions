@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 export default function PartnersPage() {
   return (
     <>
-      <PageIntro intro={ru.partners.intro} />
+      <PageIntro section="partners" />
 
       <PartnersCarousel />
 

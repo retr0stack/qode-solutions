@@ -15,8 +15,8 @@ import { FounderPanel } from "./FounderPanel";
 import { StoryDeck } from "./StoryDeck";
 
 /**
- * Страница основателей: сверху две биографии, ниже — история агентства,
- * которую читают прокруткой.
+ * Страница основателей: сверху две биографии, ниже – история агентства
+ * горизонтальной лентой.
  *
  * Порядок намеренный: сначала люди, потом причина, по которой они собрались.
  * Так страница читается как рассказ, а не как раздел «о нас».
@@ -77,9 +77,12 @@ export function FoundersContent() {
           <SectionIntroBlock intro={dict.founders.storyIntro} />
         </Container>
 
-        <Container className="relative">
+        {/* Лента идёт от края экрана, а не от границ контейнера: обрезанная
+            по краю карточка сама показывает, что справа есть продолжение.
+            Внутренние отступы повторяют поля контейнера. */}
+        <div className="relative px-[var(--gutter)]">
           <StoryDeck chapters={dict.founders.chapters} />
-        </Container>
+        </div>
       </Section>
 
       <Section density="md">

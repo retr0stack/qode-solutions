@@ -7,7 +7,7 @@ import { Container, Heading, Text } from "@/components/primitives";
 import { Button } from "@/components/ui";
 import { FadeIn, Magnetic, SplitText } from "@/components/motion";
 import { useDict } from "@/components/i18n";
-import { leadFormHref, whatsappHref } from "@/content";
+import { leadFormHref } from "@/content";
 import { HeroBackdrop } from "./HeroBackdrop";
 import { HeroLogo } from "./HeroLogo";
 import { ScrollHint } from "./ScrollHint";
@@ -66,18 +66,18 @@ export function Hero() {
                 капсулу, а первая из них – сразу основное действие. */}
             <FadeIn delay={0.68} className="mt-1 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
               <Magnetic className="w-full sm:w-auto">
-                <Button href={whatsappHref} size="lg" className="w-full sm:w-auto">
-                  {dict.common.writeWhatsApp}
+                <Button href={leadFormHref} size="lg" className="w-full sm:w-auto">
+                  {dict.hero.primaryCta}
                 </Button>
               </Magnetic>
               <Magnetic className="w-full sm:w-auto">
                 <Button
-                  href={leadFormHref}
+                  href="/portfolio"
                   variant="secondary"
                   size="lg"
                   className="w-full sm:w-auto"
                 >
-                  {dict.hero.primaryCta}
+                  {dict.hero.secondaryCta}
                 </Button>
               </Magnetic>
             </FadeIn>
@@ -101,7 +101,7 @@ export function Hero() {
                     <dt className="text-gradient font-display text-[clamp(1.125rem,1.5vw,1.5rem)] leading-tight font-bold whitespace-nowrap tabular-nums">
                       {stat.value}
                     </dt>
-                    <dd className="text-fg-2 min-h-10 max-w-[18ch] text-caption">
+                    <dd className="text-fg-2 min-h-10 max-w-[20ch] text-caption whitespace-pre-line">
                       {stat.label}
                     </dd>
                   </div>

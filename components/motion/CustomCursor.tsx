@@ -3,47 +3,39 @@
 import { useEffect, useRef, useState } from "react";
 import { useHasPointer, usePrefersReducedMotion } from "@/lib/hooks";
 
-/** Насколько кольцо догоняет точку за кадр. Больше — жёстче связка. */
-const RING_FOLLOW = 0.28;
-
+/** Элементы, над которыми курсор реагирует. */
 const INTERACTIVE = 'a, button, [role="button"], input, textarea, select, summary';
 
 /**
- * Кастомный курсор: точка ровно под пальцем и кольцо, догоняющее её.
+ * Курсор сайта.
  *
- * Точка позиционируется прямо в обработчике pointermove — без пружин, без
- * requestAnimationFrame и без промежуточных состояний. Задержка равна
- * задержке самого события, то есть отклик совпадает с системным курсором.
+ * Один элемент вместо двух.
  *
- * Кольцо — единственное, что отстаёт, и делает это намеренно: его позиция
- * подтягивается к точке в цикле rAF. Один цикл на весь курсор.
+ * Прошлая версия состояла из точки и догоняющего кольца, и точка при
+ * резком движении оказывалась снаружи. Чинить рассинхрон двух объектов,
+ * которые движутся с разной скоростью, бессмысленно: пока они разные,
+ * разойтись они могут всегда. Здесь рисуется одна окружность, её позиция
+ * ставится синхронно в обработчике движения, и расходиться нечему.
  *
- * Главное: за время движения мыши здесь не происходит ни одного React-рендера.
- * Позиции пишутся напрямую в style.transform по рефам, наведение отслеживается
- * событиями pointerover/pointerout (они срабатывают на смене элемента, а не
- * на каждый пиксель), а состояние меняется только когда значение реально
- * другое. Именно ежекадровый setState и пружина на точке давали ощущение,
- * что курсор «плывёт» и не поспевает за рукой.
+ * Реакция на интерактивные элементы – размером и заливкой, а не вторым
+ * объектом: над ссылкой кольцо увеличивается и наливается цветом.
  *
- * На тач-устройствах и при prefers-reduced-motion компонент не рендерится —
- * там остаётся системный курсор.
+ * Цвет фирменный, а не производный от текста. Полупрозрачное серое
+ * кольцо пропадало и на белом, и на тёмно-синем – теперь оно голубое,
+ * с тонкой светлой обводкой снаружи и мягким свечением. Обводка держит
+ * контур на светлом фоне, свечение – на тёмном.
+ *
+ * Выключается на тач-устройствах и при prefers-reduced-motion – там
+ * системный курсор либо отсутствует, либо нужен как есть.
  */
 export function CustomCursor() {
   const hasPointer = useHasPointer();
   const reduced = usePrefersReducedMotion();
   const enabled = hasPointer && !reduced;
 
-  const dotRef = useRef<HTMLSpanElement>(null);
-  const ringRef = useRef<HTMLSpanElement>(null);
-
+  const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [active, setActive] = useState(false);
-
-  // Читаются и пишутся только внутри обработчиков и rAF — рендер не трогают.
-  const pointer = useRef({ x: -100, y: -100 });
-  const ring = useRef({ x: -100, y: -100 });
-  const visibleRef = useRef(false);
-  const activeRef = useRef(false);
 
   useEffect(() => {
     if (!enabled) return;
@@ -51,61 +43,33 @@ export function CustomCursor() {
     document.documentElement.dataset.customCursor = "on";
 
     const onMove = (event: PointerEvent) => {
-      pointer.current.x = event.clientX;
-      pointer.current.y = event.clientY;
+      const node = ref.current;
+      if (!node) return;
 
-      // Точка ставится синхронно с событием — это и есть «реальное время».
-      const dot = dotRef.current;
-      if (dot) {
-        dot.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`;
-      }
-
-      if (!visibleRef.current) {
-        visibleRef.current = true;
-        setVisible(true);
-      }
+      /* Позиция ставится прямо здесь, а не в кадре анимации: любая
+         отложенная отрисовка – это отставание от настоящего курсора. */
+      node.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`;
+      if (!visible) setVisible(true);
     };
 
-    /* pointerover/pointerout срабатывают на смене элемента под курсором,
-       а не на каждое движение: closest() вызывается в разы реже. */
     const onOver = (event: PointerEvent) => {
       const target = event.target as Element | null;
-      const next = Boolean(target?.closest(INTERACTIVE));
-      if (next !== activeRef.current) {
-        activeRef.current = next;
-        setActive(next);
-      }
+      setActive(Boolean(target?.closest?.(INTERACTIVE)));
     };
 
-    const onLeave = () => {
-      visibleRef.current = false;
-      setVisible(false);
-    };
-
-    let frame = 0;
-    const tick = () => {
-      const node = ringRef.current;
-      if (node) {
-        ring.current.x += (pointer.current.x - ring.current.x) * RING_FOLLOW;
-        ring.current.y += (pointer.current.y - ring.current.y) * RING_FOLLOW;
-        node.style.transform = `translate3d(${ring.current.x}px, ${ring.current.y}px, 0)`;
-      }
-      frame = requestAnimationFrame(tick);
-    };
-    frame = requestAnimationFrame(tick);
+    const onLeave = () => setVisible(false);
 
     window.addEventListener("pointermove", onMove, { passive: true });
     window.addEventListener("pointerover", onOver, { passive: true });
     document.addEventListener("pointerleave", onLeave);
 
     return () => {
-      cancelAnimationFrame(frame);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerover", onOver);
       document.removeEventListener("pointerleave", onLeave);
       delete document.documentElement.dataset.customCursor;
     };
-  }, [enabled]);
+  }, [enabled, visible]);
 
   if (!enabled) return null;
 
@@ -115,22 +79,28 @@ export function CustomCursor() {
       className="pointer-events-none fixed inset-0 z-[100]"
       style={{ opacity: visible ? 1 : 0, transition: "opacity 150ms linear" }}
     >
-      {/* Обёртки несут позицию, вложенные элементы – центровку и размер.
-          Так transform позиции не смешивается с transform центровки. */}
-      <span ref={dotRef} className="absolute top-0 left-0 block will-change-transform">
-        <span className="block size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[image:var(--gradient-brand)]" />
-      </span>
-
-      <span ref={ringRef} className="absolute top-0 left-0 block will-change-transform">
+      {/* Внешняя обёртка несёт позицию, вложенный элемент – центровку и
+          размер: так transform позиции не смешивается с transform
+          центровки и их не нужно пересчитывать вместе. */}
+      <div ref={ref} className="absolute top-0 left-0 will-change-transform">
         <span
-          className="border-fg/25 block size-9 -translate-x-1/2 -translate-y-1/2 rounded-full border"
+          className="block rounded-full border-2 transition-[width,height,background-color,border-color,box-shadow] duration-200 ease-out"
           style={{
-            transform: `translate(-50%, -50%) scale(${active ? 1.45 : 1})`,
-            opacity: active ? 0.9 : 0.5,
-            transition: "transform 180ms cubic-bezier(0.22,1,0.36,1), opacity 180ms linear",
+            width: active ? 44 : 22,
+            height: active ? 44 : 22,
+            transform: "translate(-50%, -50%)",
+            borderColor: active ? "var(--color-cyan)" : "var(--color-blue)",
+            backgroundColor: active
+              ? "color-mix(in srgb, var(--color-cyan) 22%, transparent)"
+              : "color-mix(in srgb, var(--color-blue) 10%, transparent)",
+            /* Светлая обводка снаружи + свечение: первая читается на
+               светлом фоне, второе – на тёмном. */
+            boxShadow: active
+              ? "0 0 0 1px rgb(255 255 255 / 0.5), 0 0 18px rgb(34 211 238 / 0.55)"
+              : "0 0 0 1px rgb(255 255 255 / 0.35), 0 0 12px rgb(43 141 255 / 0.45)",
           }}
         />
-      </span>
+      </div>
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { Heading, Text } from "@/components/primitives";
 import { Button, Disclosure } from "@/components/ui";
 import { Magnetic } from "@/components/motion";
 import { useDict } from "@/components/i18n";
-import { contacts, socials, whatsappHref, PHONE_ENABLED } from "@/content";
+import { contacts, phones, socials, whatsappHref, PHONE_ENABLED } from "@/content";
 import { track } from "@/lib/analytics";
 
 /**
@@ -73,21 +73,23 @@ function Channels() {
   return (
     <div className="flex flex-col gap-6">
       <dl className="flex flex-col gap-6">
-        {/* Телефон появится, когда в конфиге включат PHONE_ENABLED. */}
+        {/* Оба номера в одном блоке: тянуть подпись «Телефон» дважды незачем. */}
         {PHONE_ENABLED ? (
           <div className="flex flex-col gap-1">
             <dt className="text-fg-2 text-label font-semibold uppercase">
               {dict.contacts.phoneLabel}
             </dt>
-            <dd>
-              <a
-                href={contacts.phoneHref}
-                onClick={() => track("phone_click")}
-                className="font-display text-title font-semibold"
-              >
-                {contacts.phone}
-              </a>
-            </dd>
+            {phones.map((phone) => (
+              <dd key={phone.href}>
+                <a
+                  href={phone.href}
+                  onClick={() => track("phone_click")}
+                  className="font-display text-title font-semibold"
+                >
+                  {phone.label}
+                </a>
+              </dd>
+            ))}
           </div>
         ) : null}
 

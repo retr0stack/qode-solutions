@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PageIntro } from "@/components/layout";
-import { PortfolioNda, PortfolioWall } from "@/components/cases";
+import { CaseStudyList, PortfolioNda } from "@/components/cases";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbSchema } from "@/lib/schema";
 import { pageSeo } from "@/content";
@@ -11,8 +11,8 @@ export const metadata: Metadata = {
   description: pageSeo.cases.description,
   alternates: { canonical: "/portfolio" },
   /*
-   * Кейсы в content/cases.ts пока временные, поэтому страница закрыта от
-   * индексации. Снять noindex вместе с заменой данных на настоящие.
+   * Данные кейсов пока вымышленные – страница закрыта от индексации.
+   * Снять noindex вместе с заменой на настоящие проекты и цифры.
    */
   robots: { index: false, follow: true },
   openGraph: {
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
 export default function PortfolioPage() {
   return (
     <>
-      <PageIntro intro={ru.cases.intro} />
+      <PageIntro section="cases" />
 
-      <PortfolioWall />
+      <CaseStudyList />
 
       <PortfolioNda />
 

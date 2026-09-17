@@ -189,3 +189,35 @@
     display: none;
   }
 }
+
+/*
+ * Полоса прокрутки ленты истории.
+ *
+ * Оставлена видимой намеренно. Скрытая полоса выглядит опрятнее, но на
+ * десктопе тогда нечем двигать ленту: колесо крутит страницу по вертикали,
+ * а горизонтального жеста у обычной мыши нет. Тонкую полосу в цвет линий
+ * можно просто тянуть, и она же показывает, что справа есть продолжение.
+ */
+.story-track {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-strong) transparent;
+  scroll-padding-inline: var(--gutter);
+}
+
+.story-track::-webkit-scrollbar {
+  height: 6px;
+}
+
+.story-track::-webkit-scrollbar-track {
+  background: var(--color-line);
+  border-radius: 999px;
+}
+
+.story-track::-webkit-scrollbar-thumb {
+  background: var(--color-line-strong);
+  border-radius: 999px;
+}
+
+.story-track::-webkit-scrollbar-thumb:hover {
+  background: var(--color-fg-2);
+}

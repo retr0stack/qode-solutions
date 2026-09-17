@@ -15,5 +15,6 @@ export * from "./stack";
 export * from "./faq";
 export * from "./team";
 export * from "./cases";
+export * from "./cases.kk";
 export * from "./forms";
 export * from "./seo";

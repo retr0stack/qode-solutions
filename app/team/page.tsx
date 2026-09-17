@@ -26,7 +26,7 @@ export default function TeamPage() {
   return (
     <>
       <PageIntro
-        intro={ru.team.intro}
+        section="team"
         aside={
           <p className="text-small lg:text-right">
             {published} {ru.team.countLabel}. {ru.team.aside}

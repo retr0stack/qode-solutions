@@ -219,10 +219,10 @@ export interface Dict {
     readonly contactHint: string;
     readonly taskLabel: string;
     readonly taskPlaceholder: string;
-    readonly budgetLabel: string;
-    readonly budgetPlaceholder: string;
-    readonly budgetHint: string;
-    readonly budgetOptions: readonly { readonly value: string; readonly label: string }[];
+    readonly serviceLabel: string;
+    readonly servicePlaceholder: string;
+    readonly serviceHint: string;
+    readonly serviceOptions: readonly { readonly value: string; readonly label: string }[];
     readonly submit: string;
     readonly submitting: string;
     readonly reply: string;
@@ -240,7 +240,7 @@ export interface Dict {
       readonly contactInvalid: string;
       readonly taskRequired: string;
       readonly taskTooShort: string;
-      readonly budgetRequired: string;
+      readonly serviceRequired: string;
     };
   };
 
@@ -272,6 +272,13 @@ export interface Dict {
     readonly emptyTitle: string;
     readonly emptyText: string;
     readonly emptyCta: string;
+    /** Подписи разделов разбора кейса. */
+    readonly problemLabel: string;
+    readonly solutionLabel: string;
+    readonly deliveredLabel: string;
+    readonly ctaLabel: string;
+    /** Ссылка с главной на подробные разборы. */
+    readonly allLink: string;
   };
 
   /** Подсказка на стене портфолио: разная для курсора и пальца. */

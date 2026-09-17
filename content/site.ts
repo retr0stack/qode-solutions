@@ -44,15 +44,27 @@ export const site = {
 export const PHONE_ENABLED = true;
 
 
+/**
+ * Телефоны.
+ *
+ * Два номера, оба кликабельные: href в формате tel: с E.164 без пробелов
+ * и скобок – иначе часть телефонов и десктопных звонилок обрезает номер
+ * на первом же нецифровом символе. Показывается человекочитаемый вариант,
+ * набирается машинный.
+ */
+export const phones = [
+  { label: "+7 (747) 239-28-61", href: "tel:+77472392861" },
+  { label: "+7 (777) 434-00-07", href: "tel:+77774340007" },
+] as const;
+
 export const contacts = {
-  /* TODO: реальный номер в формате E.164 – включается флагом PHONE_ENABLED */
-  phone: "+7 700 000 00 00",
-  phoneHref: "tel:+77000000000",
-  /* TODO: рабочая почта */
-  email: "hello@qode.kz",
-  emailHref: "mailto:hello@qode.kz",
-  /* TODO: номер WhatsApp без плюса и пробелов – главный канал связи */
-  whatsapp: "77000000000",
+  /** Основной номер: он же в WhatsApp. */
+  phone: phones[0].label,
+  phoneHref: phones[0].href,
+  email: "info@qode.kz",
+  emailHref: "mailto:info@qode.kz",
+  /* Номер WhatsApp без плюса и пробелов – формат, который ждёт wa.me. */
+  whatsapp: "77472392861",
   whatsappText: "Здравствуйте! Хочу обсудить проект.",
   /* TODO: юзернейм в Telegram */
   telegram: "qode_solutions",

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container, Text } from "@/components/primitives";
 import { GradientBlobs } from "@/components/motion";
-import { contacts, site, socials, whatsappHref, PHONE_ENABLED } from "@/content";
+import { contacts, phones, site, socials, whatsappHref, PHONE_ENABLED } from "@/content";
 import { track } from "@/lib/analytics";
 import { useDict } from "@/components/i18n";
 
@@ -100,18 +100,20 @@ export function Footer() {
                     WhatsApp
                   </a>
                 </li>
-                {/* Телефон появится, когда в конфиге включат PHONE_ENABLED. */}
-                {PHONE_ENABLED ? (
-                  <li>
-                    <a
-                      href={contacts.phoneHref}
-                      onClick={() => track("phone_click")}
-                      className="text-small"
-                    >
-                      {contacts.phone}
-                    </a>
-                  </li>
-                ) : null}
+                {/* Оба номера, каждый кликабельный. */}
+                {PHONE_ENABLED
+                  ? phones.map((phone) => (
+                      <li key={phone.href}>
+                        <a
+                          href={phone.href}
+                          onClick={() => track("phone_click")}
+                          className="text-small"
+                        >
+                          {phone.label}
+                        </a>
+                      </li>
+                    ))
+                  : null}
                 <li>
                   <a
                     href={contacts.emailHref}

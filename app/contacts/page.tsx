@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 export default function ContactsPage() {
   return (
     <>
-      <PageIntro intro={ru.contacts.intro} />
+      <PageIntro section="contacts" />
 
       <ContactsBody />
 

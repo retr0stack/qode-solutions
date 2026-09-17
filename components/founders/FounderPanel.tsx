@@ -58,19 +58,32 @@ export function FounderPanel({ founder, index }: FounderPanelProps) {
       </div>
 
       {/* Описание – под своим кадром. */}
-      <div className="flex flex-1 flex-col gap-4 p-[var(--gutter)] pt-10">
-        {founder.bio.map((paragraph) => (
-          <p key={paragraph.slice(0, 24)} className="max-w-[56ch] text-small">
-            {paragraph}
-          </p>
-        ))}
-
-        <dl className="border-line mt-auto flex flex-col gap-3 border-t pt-6 sm:flex-row sm:gap-10">
-          {founder.facts.map((fact) => (
-            <div
-              key={fact.label}
-              className="flex items-baseline justify-between gap-4 sm:flex-col sm:items-start sm:gap-1"
+      <div className="flex flex-1 flex-col gap-6 p-[var(--gutter)] pt-10">
+        {/*
+          Первый абзац крупнее остальных и с цветной отбивкой слева: три
+          одинаковых абзаца подряд читались как служебная справка, а не как
+          рассказ о человеке. Кегль задаёт порядок чтения, а не украшает.
+        */}
+        {founder.bio.map((paragraph, index) =>
+          index === 0 ? (
+            <p
+              key={paragraph.slice(0, 24)}
+              className="border-l-2 border-[color:var(--color-accent)] pl-5 text-lead max-w-[46ch] font-medium"
             >
+              {paragraph}
+            </p>
+          ) : (
+            <p key={paragraph.slice(0, 24)} className="max-w-[56ch] text-small">
+              {paragraph}
+            </p>
+          ),
+        )}
+
+        {/* Факты вынесены на подложку: это карточка-справка, и она не
+            должна сливаться с биографией. */}
+        <dl className="mt-auto flex flex-col gap-4 rounded-[var(--radius-lg)] bg-[color:var(--color-paper-4)] p-5">
+          {founder.facts.map((fact) => (
+            <div key={fact.label} className="flex flex-col gap-0.5">
               <dt className="text-fg-2 text-caption">{fact.label}</dt>
               <dd className="text-small font-semibold">{fact.value}</dd>
             </div>

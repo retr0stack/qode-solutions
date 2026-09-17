@@ -35,7 +35,8 @@ export default function ServicesPage() {
   return (
     <>
       <PageIntro
-        intro={ru.services.intro}
+        section="services"
+        titleNoWrap
         aside={
           <p className="text-small lg:text-right">
             {ru.services.categories.length} {ru.services.categoriesLabel} · {count}{" "}
